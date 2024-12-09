@@ -51,7 +51,7 @@ const Index = () => {
 
   return (
     <div ref={containerRef} className="relative w-full h-screen bg-black">
-      <VideoPlayer channel={currentChannel} shouldPlay={!showAd} />
+      <VideoPlayer channel={currentChannel} />
 
       <ChannelControls
         channelName={currentChannel.name}

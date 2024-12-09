@@ -7,10 +7,9 @@ import { useVideoControls } from "@/hooks/useVideoControls";
 
 interface VideoPlayerProps {
   channel: Channel;
-  shouldPlay?: boolean;
 }
 
-export const VideoPlayer = ({ channel, shouldPlay = true }: VideoPlayerProps) => {
+export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
   const { videoRef, isLoading, error } = useShaka(channel);
   const {
     isPlaying,
@@ -36,7 +35,7 @@ export const VideoPlayer = ({ channel, shouldPlay = true }: VideoPlayerProps) =>
       <video
         ref={videoRef}
         className="w-full h-full object-contain"
-        autoPlay={shouldPlay}
+        autoPlay
       />
 
       {/* Custom Controls */}
