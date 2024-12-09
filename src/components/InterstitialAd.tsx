@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Channel } from "@/lib/channels";
 import { X } from "lucide-react";
+import { Button } from "./ui/button";
 
 interface InterstitialAdProps {
   onClose: () => void;
@@ -8,13 +9,21 @@ interface InterstitialAdProps {
 }
 
 export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) => {
+  const [timeLeft, setTimeLeft] = useState(10);
   const [buttons, setButtons] = useState<Array<{ id: number; isReal: boolean; position: { top: string; left: string } }>>();
 
   useEffect(() => {
-    // Auto-close after 15 seconds
-    const timer = setTimeout(() => {
-      onClose();
-    }, 15000);
+    // Auto-close after 10 seconds
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          onClose();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
 
     // Generate 5 buttons with random positions, avoiding the header and footer areas
     const generateButtons = () => {
@@ -70,7 +79,7 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
 
     setButtons(generateButtons());
 
-    return () => clearTimeout(timer);
+    return () => clearInterval(timer);
   }, [onClose]);
 
   const handleButtonClick = (isReal: boolean) => {
@@ -84,6 +93,16 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
   return (
     <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
       <div className="relative w-full h-full max-w-6xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
+        {/* Real Close Button - Always visible in top-right corner */}
+        <Button 
+          variant="outline"
+          size="icon"
+          className="absolute top-4 right-4 z-50"
+          onClick={() => onClose()}
+        >
+          <X className="h-4 w-4" />
+        </Button>
+
         {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-20"
@@ -111,12 +130,12 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
               className="w-full max-w-2xl rounded-lg shadow-lg"
             />
             
-            <p className="text-gray-600 text-lg animate-pulse">
-              Your content will resume in 15 seconds...
+            <p className="text-gray-600 text-lg">
+              Your content will resume in {timeLeft} seconds...
             </p>
           </div>
 
-          {/* Close Buttons */}
+          {/* Fake Close Buttons */}
           {buttons?.map((button) => (
             <button
               key={button.id}

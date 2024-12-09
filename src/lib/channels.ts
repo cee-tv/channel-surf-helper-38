@@ -7,23 +7,13 @@ export interface Channel {
 }
 
 export const channels: Channel[] = [
-        {
- id: "1",               name: "TV 5",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/4/4f/TV5_%28Philippines%29_logo.svg",
-               
-drmKey: "2615129ef2c846a9bbd43a641c7303ef:07c7f996b1734ea288641a68e1cfdc4d",
-                url: "https://qp-pldt-live-grp-02-prod.akamaized.net/out/u/tv5_hd.mpd"
-               
-                 
-            },
-            {
- id: "2",               name: "KAPAMILYA",
-                logo: "https://raw.githubusercontent.com/Raulabdul666/Drmpicture/refs/heads/main/Picsart_24-10-17_11-02-54-579.jpg",
-                drmKey: "bd17afb5dc9648a39be79ee3634dd4b8:3ecf305d54a7729299b93a3d69c02ea5",
-                url: "https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg01006-abs-cbn-kapcha-dash-abscbnono/index.mpd"
-               
-                 
-          },
+  {
+    id: "1",
+    name: "TV 5",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/4/4f/TV5_%28Philippines%29_logo.svg",
+    drmKey: "2615129ef2c846a9bbd43a641c7303ef:07c7f996b1734ea288641a68e1cfdc4d",
+    url: "https://qp-pldt-live-grp-02-prod.akamaized.net/out/u/tv5_hd.mpd"
+  },
             {
  id: "3",               name: "GMA PINOY TV",
                 logo: "https://raw.githubusercontent.com/Raulabdul666/Drmpicture/refs/heads/main/Picsart_24-10-17_11-02-54-579.jpg",
