@@ -26,11 +26,20 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
   return (
     <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full relative overflow-hidden">
-        {/* Close button */}
+        {/* Close buttons on both sides */}
+        <div className="absolute top-2 left-2 z-10">
+          <button 
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            aria-label="Close ad"
+          >
+            <X className="h-6 w-6 text-gray-500" />
+          </button>
+        </div>
         <button 
           onClick={handleClose}
-          className="absolute top-2 right-2 p-2 hover:bg-gray-100 rounded-full transition-colors"
-          aria-label="Close ad"
+          className="absolute top-2 right-2 z-10 p-2 hover:bg-gray-100 rounded-full transition-colors"
+          aria-label="Open ad"
         >
           <X className="h-6 w-6 text-gray-500" />
         </button>
