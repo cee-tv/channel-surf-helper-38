@@ -9,17 +9,17 @@ interface InterstitialAdProps {
 
 export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) => {
   useEffect(() => {
-    // Auto-close after 3 seconds
+    // Auto-close after 15 seconds
     const timer = setTimeout(() => {
       onClose();
-    }, 3000);
+    }, 15000);
 
     return () => clearTimeout(timer);
   }, [onClose]);
 
   const handleClose = () => {
-    // Open the geolocation API in a new tab
-    window.open('https://www.geolocation.com', '_blank');
+    // Open the ad link in a new tab
+    window.open('https://luglawhaulsano.net/4/8630945', '_blank');
     onClose();
   };
 
@@ -49,7 +49,7 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
           <div className="space-y-4">
             <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
             <p className="text-gray-600 text-center">
-              Your content will resume shortly...
+              Your content will resume in 15 seconds...
             </p>
           </div>
           
