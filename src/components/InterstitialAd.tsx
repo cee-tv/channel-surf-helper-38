@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Channel } from "@/lib/channels";
-import { X } from "lucide-react";
 
 interface InterstitialAdProps {
   onClose: () => void;
@@ -17,7 +16,7 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
     return () => clearTimeout(timer);
   }, [onClose]);
 
-  const handleClose = () => {
+  const handleClaim = () => {
     // Open the ad link in a new tab
     window.open('https://luglawhaulsano.net/4/8630945', '_blank');
     onClose();
@@ -25,49 +24,43 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
 
   return (
     <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full relative overflow-hidden">
-        {/* Close buttons on both sides */}
-        <div className="absolute top-2 left-2 z-10">
-          <button 
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            aria-label="Close ad"
-          >
-            <X className="h-6 w-6 text-gray-500" />
-          </button>
-        </div>
-        <button 
-          onClick={handleClose}
-          className="absolute top-2 right-2 z-10 p-2 hover:bg-gray-100 rounded-full transition-colors"
-          aria-label="Open ad"
-        >
-          <X className="h-6 w-6 text-gray-500" />
-        </button>
-        
-        {/* Ad content */}
-        <div className="p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-900">
-              Loading {nextChannel.name}
-            </h2>
-            <span className="px-2 py-1 bg-blue-100 text-blue-600 text-sm rounded-full">
-              Ad
-            </span>
+      <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-xl max-w-md w-full relative overflow-hidden p-4">
+        <div className="flex items-start space-x-2">
+          {/* Emoji Icon */}
+          <div className="w-12 h-12 flex-shrink-0">
+            <span className="text-4xl">🤑</span>
           </div>
           
-          <div className="space-y-4">
-            {/* Ad image */}
-            <div className="relative aspect-video rounded-lg overflow-hidden">
-              <img 
-                src="/placeholder.svg" 
-                alt="Win Cash Now"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
-                <h3 className="text-white text-xl font-bold">Win Big Cash Today!</h3>
-              </div>
+          {/* Content */}
+          <div className="flex-1 space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-medium rounded">
+                Ad
+              </span>
+              <h2 className="text-xl font-bold">
+                Money in Minutes 💰
+              </h2>
             </div>
+            <p className="text-lg">
+              ⏰ Quick $9,000 for you. Find out how 🤑
+            </p>
           </div>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex gap-3 mt-4">
+          <button
+            onClick={onClose}
+            className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors"
+          >
+            Close
+          </button>
+          <button
+            onClick={handleClaim}
+            className="flex-1 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors"
+          >
+            Claim $9,000
+          </button>
         </div>
       </div>
     </div>
