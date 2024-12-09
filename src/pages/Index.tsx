@@ -4,7 +4,6 @@ import { ChannelList } from "@/components/ChannelList";
 import { ChannelControls } from "@/components/ChannelControls";
 import { InterstitialAd } from "@/components/InterstitialAd";
 import { channels, Channel } from "@/lib/channels";
-import { SidebarProvider } from "@/components/ui/sidebar";
 
 const Index = () => {
   const [currentChannel, setCurrentChannel] = useState<Channel>(channels[0]);
@@ -51,37 +50,33 @@ const Index = () => {
   };
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <div ref={containerRef} className="relative w-full h-screen bg-black">
-          <VideoPlayer channel={currentChannel} />
+    <div ref={containerRef} className="relative w-full h-screen bg-black">
+      <VideoPlayer channel={currentChannel} />
 
-          <ChannelControls
-            channelName={currentChannel.name}
-            onPrevious={handlePreviousChannel}
-            onNext={handleNextChannel}
-            onShowChannels={toggleChannels}
-            onToggleFullscreen={toggleFullscreen}
-          />
+      <ChannelControls
+        channelName={currentChannel.name}
+        onPrevious={handlePreviousChannel}
+        onNext={handleNextChannel}
+        onShowChannels={toggleChannels}
+        onToggleFullscreen={toggleFullscreen}
+      />
 
-          {showChannels && (
-            <ChannelList
-              channels={channels}
-              currentChannel={currentChannel}
-              onChannelSelect={(channel) => {
-                setShowChannels(false);
-                changeChannel(channel);
-              }}
-              onClose={toggleChannels}
-            />
-          )}
+      {showChannels && (
+        <ChannelList
+          channels={channels}
+          currentChannel={currentChannel}
+          onChannelSelect={(channel) => {
+            setShowChannels(false);
+            changeChannel(channel);
+          }}
+          onClose={toggleChannels}
+        />
+      )}
 
-          {showAd && nextChannel && (
-            <InterstitialAd onClose={handleAdClose} nextChannel={nextChannel} />
-          )}
-        </div>
-      </div>
-    </SidebarProvider>
+      {showAd && nextChannel && (
+        <InterstitialAd onClose={handleAdClose} nextChannel={nextChannel} />
+      )}
+    </div>
   );
 };
 
