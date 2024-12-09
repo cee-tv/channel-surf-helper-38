@@ -22,9 +22,9 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
     onClose();
   };
 
-  // Generate 20 close buttons with random positions
+  // Generate 5 close buttons with random positions
   const closeButtons = useMemo(() => {
-    const buttons = Array(20).fill(null).map((_, index) => ({
+    const buttons = Array(5).fill(null).map((_, index) => ({
       id: index,
       isReal: false, // By default, all buttons are fake (will open ad)
       position: {
@@ -34,15 +34,15 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
     }));
 
     // Randomly select one button to be the real close button
-    const realCloseIndex = Math.floor(Math.random() * 20);
+    const realCloseIndex = Math.floor(Math.random() * 5);
     buttons[realCloseIndex].isReal = true;
 
     return buttons;
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
-      <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-xl max-w-md w-full relative overflow-hidden p-4">
+    <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center">
+      <div className="bg-white/90 backdrop-blur-sm w-[95vw] h-[90vh] relative overflow-hidden p-8 rounded-xl shadow-xl">
         <div className="flex items-start space-x-2">
           {/* Emoji Icon */}
           <div className="w-12 h-12 flex-shrink-0">
@@ -70,7 +70,7 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
           <button
             key={button.id}
             onClick={button.isReal ? onClose : handleClaim}
-            className="absolute px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded text-sm"
+            className="absolute px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded text-sm font-medium"
             style={{
               top: button.position.top,
               left: button.position.left,
@@ -83,10 +83,10 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
         ))}
 
         {/* Main Claim button */}
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center mt-8">
           <button
             onClick={handleClaim}
-            className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors"
+            className="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors text-lg"
           >
             Claim $9,000
           </button>
