@@ -47,20 +47,13 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
           </div>
           
           <div className="space-y-4">
-            {/* Ad image */}
-            <div className="relative aspect-video rounded-lg overflow-hidden">
-              <img 
-                src="/placeholder.svg" 
-                alt="Win Cash Now"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
-                <h3 className="text-white text-xl font-bold">Win Big Cash Today!</h3>
-              </div>
-            </div>
             <p className="text-gray-600 text-center">
               Your content will resume in 15 seconds...
             </p>
+          </div>
+          
+          <div className="text-center text-sm text-gray-500">
+            Click (x) to learn more about our sponsor
           </div>
         </div>
       </div>
