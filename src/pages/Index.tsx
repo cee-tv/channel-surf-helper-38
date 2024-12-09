@@ -13,13 +13,13 @@ const Index = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const changeChannel = (channel: Channel) => {
+    setCurrentChannel(channel); // Update channel immediately
     setNextChannel(channel);
     setShowAd(true);
   };
 
   const handleAdClose = () => {
     if (nextChannel) {
-      setCurrentChannel(nextChannel);
       setNextChannel(null);
     }
     setShowAd(false);
