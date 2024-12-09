@@ -58,9 +58,6 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
                 <h3 className="text-white text-xl font-bold">Win Big Cash Today!</h3>
               </div>
             </div>
-            <p className="text-gray-600 text-center">
-              Your content will resume in 15 seconds...
-            </p>
           </div>
         </div>
       </div>
