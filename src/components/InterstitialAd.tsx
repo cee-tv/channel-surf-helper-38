@@ -16,17 +16,56 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
       onClose();
     }, 15000);
 
-    // Generate 5 buttons with random positions
+    // Generate 5 buttons with random positions, avoiding the header and footer areas
     const generateButtons = () => {
       const realButtonIndex = Math.floor(Math.random() * 5);
-      return Array.from({ length: 5 }, (_, index) => ({
-        id: index,
-        isReal: index === realButtonIndex,
-        position: {
-          top: `${Math.random() * 80 + 10}%`,
-          left: `${Math.random() * 80 + 10}%`,
-        }
-      }));
+      
+      // Define safe zones for button placement (avoiding header and footer)
+      const safeZones = [
+        { minTop: 25, maxTop: 75 }, // Middle section
+      ];
+      
+      // Calculate positions ensuring minimum distance between buttons
+      const usedPositions: Array<{ top: number; left: number }> = [];
+      const minDistance = 100; // Minimum pixel distance between buttons
+      
+      return Array.from({ length: 5 }, (_, index) => {
+        let position;
+        let attempts = 0;
+        const maxAttempts = 50;
+        
+        do {
+          const safeZone = safeZones[Math.floor(Math.random() * safeZones.length)];
+          const top = Math.random() * (safeZone.maxTop - safeZone.minTop) + safeZone.minTop;
+          const left = Math.random() * 80 + 10;
+          
+          position = { top, left };
+          attempts++;
+          
+          // Check if position is far enough from other buttons
+          const isFarEnough = usedPositions.every(usedPos => {
+            const distance = Math.sqrt(
+              Math.pow(position.top - usedPos.top, 2) + 
+              Math.pow(position.left - usedPos.left, 2)
+            );
+            return distance >= minDistance;
+          });
+          
+          if (isFarEnough || attempts >= maxAttempts) {
+            usedPositions.push(position);
+            break;
+          }
+        } while (attempts < maxAttempts);
+        
+        return {
+          id: index,
+          isReal: index === realButtonIndex,
+          position: {
+            top: `${position.top}%`,
+            left: `${position.left}%`,
+          }
+        };
+      });
     };
 
     setButtons(generateButtons());
