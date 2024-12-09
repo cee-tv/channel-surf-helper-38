@@ -18,7 +18,7 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
 
   const handleClaim = () => {
     // Open the ad link in a new tab
-    window.open('https://luglawhaulsano.net/4/8630945', '_blank');
+    window.open('https://example.com/ad-link', '_blank');
     onClose();
   };
 
