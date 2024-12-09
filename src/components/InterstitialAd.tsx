@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Channel } from "@/lib/channels";
 import { X } from "lucide-react";
-import { Button } from "./ui/button";
 
 interface InterstitialAdProps {
   onClose: () => void;
@@ -92,47 +91,40 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
 
   return (
     <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
-      <div className="relative w-full h-full max-w-6xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
-        {/* Real Close Button - Always visible in top-right corner */}
-        <Button 
-          variant="outline"
-          size="icon"
-          className="absolute top-4 right-4 z-50"
-          onClick={() => onClose()}
-        >
-          <X className="h-4 w-4" />
-        </Button>
-
-        {/* Background Image */}
+      <div className="relative w-full h-full max-w-6xl mx-auto bg-gradient-to-b from-gray-900 to-gray-800 rounded-lg shadow-xl overflow-hidden">
+        {/* Background Pattern */}
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-20"
+          className="absolute inset-0 opacity-5"
           style={{ 
-            backgroundImage: 'url(https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop)'
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="white" fill-opacity="1" fill-rule="evenodd"%3E%3Ccircle cx="3" cy="3" r="3"/%3E%3Ccircle cx="13" cy="13" r="3"/%3E%3C/g%3E%3C/svg%3E")',
+            backgroundSize: '30px 30px'
           }}
         />
 
         {/* Content Container */}
-        <div className="relative h-full flex flex-col items-center justify-center p-8 space-y-6">
-          <div className="flex items-center justify-between w-full">
-            <h2 className="text-2xl font-bold text-gray-900">
+        <div className="relative h-full flex flex-col items-center justify-center p-8 space-y-8">
+          {/* Header */}
+          <div className="flex items-center justify-between w-full max-w-4xl">
+            <h2 className="text-3xl font-bold text-white">
               Loading {nextChannel.name}
             </h2>
-            <span className="px-3 py-1 bg-blue-100 text-blue-600 text-sm font-semibold rounded-full">
-              Ad
+            <span className="px-4 py-1 bg-blue-500/20 text-blue-400 text-sm font-semibold rounded-full border border-blue-500/30">
+              Advertisement
             </span>
           </div>
 
           {/* Main Content */}
-          <div className="flex-1 w-full flex flex-col items-center justify-center space-y-8">
-            <img 
-              src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop" 
-              alt="Advertisement"
-              className="w-full max-w-2xl rounded-lg shadow-lg"
-            />
-            
-            <p className="text-gray-600 text-lg">
-              Your content will resume in {timeLeft} seconds...
-            </p>
+          <div className="flex-1 w-full max-w-4xl flex flex-col items-center justify-center space-y-8">
+            <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-2xl">
+              <img 
+                src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop" 
+                alt="Advertisement"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-4 right-4 px-4 py-2 bg-black/70 rounded-full">
+                <span className="text-white font-medium">{timeLeft}s</span>
+              </div>
+            </div>
           </div>
 
           {/* Fake Close Buttons */}
@@ -140,20 +132,20 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
             <button
               key={button.id}
               onClick={() => handleButtonClick(button.isReal)}
-              className="absolute p-3 hover:bg-gray-100 rounded-full transition-all transform hover:scale-110 bg-white shadow-lg"
+              className="absolute p-3 hover:bg-white/10 rounded-full transition-all transform hover:scale-110 bg-white/5 backdrop-blur-sm border border-white/20"
               style={{
                 top: button.position.top,
                 left: button.position.left,
               }}
               aria-label="Close ad"
             >
-              <X className="h-6 w-6 text-gray-500" />
+              <X className="h-6 w-6 text-white/80" />
             </button>
           ))}
 
           {/* Footer Text */}
-          <div className="text-center text-sm text-gray-500 font-medium mt-4">
-            Find the real close button
+          <div className="text-center text-sm text-gray-400 font-medium mt-4">
+            Find the correct close button to continue
           </div>
         </div>
       </div>
