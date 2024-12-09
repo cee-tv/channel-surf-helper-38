@@ -47,7 +47,6 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
           </div>
           
           <div className="space-y-4">
-            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
             <p className="text-gray-600 text-center">
               Your content will resume in 15 seconds...
             </p>
