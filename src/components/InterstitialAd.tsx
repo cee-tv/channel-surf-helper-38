@@ -19,7 +19,7 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
 
   const handleClose = () => {
     // Open the geolocation API in a new tab
-    window.open('https://api.ipgeolocation.io', '_blank');
+    window.open('https://www.geolocation.com', '_blank');
     onClose();
   };
 
