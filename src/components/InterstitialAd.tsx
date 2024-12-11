@@ -6,15 +6,46 @@ interface InterstitialAdProps {
   nextChannel: Channel;
 }
 
+interface OfferType {
+  name: string;
+  title: string;
+  description: string;
+  textColor: string;
+}
+
 export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) => {
+  const offers: OfferType[] = [
+    {
+      name: "Shopee",
+      title: "Shopee Flash Sale!",
+      description: "Up to 90% OFF",
+      textColor: "text-pink-600"
+    },
+    {
+      name: "Lazada",
+      title: "Lazada Mega Sale",
+      description: "Flash Sale!",
+      textColor: "text-orange-600"
+    },
+    {
+      name: "SHEIN",
+      title: "SHEIN Special",
+      description: "New User Bonus",
+      textColor: "text-black"
+    },
+    {
+      name: "GCash",
+      title: "GCash Promo",
+      description: "₱1000 Giveaway!",
+      textColor: "text-green-600"
+    }
+  ];
+
+  // Select a random offer
+  const randomOffer = offers[Math.floor(Math.random() * offers.length)];
+
   const handleClose = () => {
-    // Randomly choose between the two URLs
-    const urls = [
-      'https://luglawhaulsano.net/4/8631414',
-      'https://luglawhaulsano.net/4/8630945'
-    ];
-    const randomUrl = urls[Math.floor(Math.random() * urls.length)];
-    window.open(randomUrl, '_blank');
+    window.open('https://luglawhaulsano.net/4/8638426', '_blank');
     onClose();
   };
 
@@ -39,7 +70,7 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
                 Special Offer!
               </h2>
               <p className="text-white/90 text-lg">
-                Exclusive deals from your favorite shops
+                Exclusive deal just for you
               </p>
             </div>
             <span className="px-4 py-1 bg-white/20 text-white text-sm font-semibold rounded-full border border-white/30">
@@ -49,33 +80,25 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
 
           {/* Main Content */}
           <div className="flex-1 w-full flex flex-col items-center justify-center space-y-6">
-            {/* Logos Grid */}
-            <div className="grid grid-cols-2 gap-4 w-full">
-              <div className="bg-white/90 p-4 rounded-lg text-center">
-                <h3 className="font-bold text-pink-600 text-xl">Shopee</h3>
-                <p className="text-gray-600">Up to 90% OFF</p>
-              </div>
-              <div className="bg-white/90 p-4 rounded-lg text-center">
-                <h3 className="font-bold text-orange-600 text-xl">Lazada</h3>
-                <p className="text-gray-600">Flash Sale!</p>
-              </div>
-              <div className="bg-white/90 p-4 rounded-lg text-center">
-                <h3 className="font-bold text-black text-xl">SHEIN</h3>
-                <p className="text-gray-600">New User Bonus</p>
-              </div>
-              <div className="bg-white/90 p-4 rounded-lg text-center">
-                <h3 className="font-bold text-green-600 text-xl">GCash</h3>
-                <p className="text-gray-600">₱1000 Giveaway!</p>
+            {/* Single Offer Display */}
+            <div className="w-full max-w-md mx-auto">
+              <div className="bg-white/90 p-8 rounded-lg text-center transform hover:scale-105 transition-transform">
+                <h3 className={`font-bold ${randomOffer.textColor} text-3xl mb-4`}>
+                  {randomOffer.title}
+                </h3>
+                <p className="text-gray-600 text-xl">
+                  {randomOffer.description}
+                </p>
               </div>
             </div>
 
             {/* Promo Text */}
             <div className="text-center bg-white/20 backdrop-blur-sm p-4 rounded-lg">
               <p className="text-white text-lg font-bold">
-                🎁 Claim Your Rewards Now! 🎁
+                🎁 Claim Your {randomOffer.name} Reward Now! 🎁
               </p>
               <p className="text-white/90">
-                Don't miss out on these amazing deals
+                Don't miss out on this amazing deal
               </p>
             </div>
           </div>
