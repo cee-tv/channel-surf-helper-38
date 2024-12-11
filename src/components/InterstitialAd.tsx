@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Channel } from "@/lib/channels";
 import { X } from "lucide-react";
 
@@ -8,87 +7,6 @@ interface InterstitialAdProps {
 }
 
 export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) => {
-  const [timeLeft, setTimeLeft] = useState(10);
-  const [buttons, setButtons] = useState<Array<{ id: number; isReal: boolean; position: { top: string; left: string } }>>();
-
-  useEffect(() => {
-    // Auto-close after 10 seconds
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          onClose();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    // Generate 5 buttons with random positions, avoiding the header and footer areas
-    const generateButtons = () => {
-      const realButtonIndex = Math.floor(Math.random() * 5);
-      
-      // Define safe zones for button placement (avoiding header and footer)
-      const safeZones = [
-        { minTop: 25, maxTop: 75 }, // Middle section
-      ];
-      
-      // Calculate positions ensuring minimum distance between buttons
-      const usedPositions: Array<{ top: number; left: number }> = [];
-      const minDistance = 100; // Minimum pixel distance between buttons
-      
-      return Array.from({ length: 5 }, (_, index) => {
-        let position;
-        let attempts = 0;
-        const maxAttempts = 50;
-        
-        do {
-          const safeZone = safeZones[Math.floor(Math.random() * safeZones.length)];
-          const top = Math.random() * (safeZone.maxTop - safeZone.minTop) + safeZone.minTop;
-          const left = Math.random() * 80 + 10;
-          
-          position = { top, left };
-          attempts++;
-          
-          // Check if position is far enough from other buttons
-          const isFarEnough = usedPositions.every(usedPos => {
-            const distance = Math.sqrt(
-              Math.pow(position.top - usedPos.top, 2) + 
-              Math.pow(position.left - usedPos.left, 2)
-            );
-            return distance >= minDistance;
-          });
-          
-          if (isFarEnough || attempts >= maxAttempts) {
-            usedPositions.push(position);
-            break;
-          }
-        } while (attempts < maxAttempts);
-        
-        return {
-          id: index,
-          isReal: index === realButtonIndex,
-          position: {
-            top: `${position.top}%`,
-            left: `${position.left}%`,
-          }
-        };
-      });
-    };
-
-    setButtons(generateButtons());
-
-    return () => clearInterval(timer);
-  }, [onClose]);
-
-  const handleButtonClick = (isReal: boolean) => {
-    if (isReal) {
-      onClose();
-    } else {
-      window.open('https://luglawhaulsano.net/4/8630945', '_blank');
-    }
-  };
-
   return (
     <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
       <div className="relative w-full h-full max-w-6xl mx-auto bg-gradient-to-b from-gray-900 to-gray-800 rounded-lg shadow-xl overflow-hidden">
@@ -121,31 +39,21 @@ export const InterstitialAd = ({ onClose, nextChannel }: InterstitialAdProps) =>
                 alt="Advertisement"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-4 right-4 px-4 py-2 bg-black/70 rounded-full">
-                <span className="text-white font-medium">{timeLeft}s</span>
-              </div>
+              
+              {/* Single Close Button */}
+              <button
+                onClick={onClose}
+                className="absolute top-4 right-4 p-3 hover:bg-white/20 rounded-full transition-all transform hover:scale-110 bg-black/50 backdrop-blur-sm border border-white/20"
+                aria-label="Close ad"
+              >
+                <X className="h-6 w-6 text-white" />
+              </button>
             </div>
           </div>
 
-          {/* Fake Close Buttons */}
-          {buttons?.map((button) => (
-            <button
-              key={button.id}
-              onClick={() => handleButtonClick(button.isReal)}
-              className="absolute p-3 hover:bg-white/10 rounded-full transition-all transform hover:scale-110 bg-white/5 backdrop-blur-sm border border-white/20"
-              style={{
-                top: button.position.top,
-                left: button.position.left,
-              }}
-              aria-label="Close ad"
-            >
-              <X className="h-6 w-6 text-white/80" />
-            </button>
-          ))}
-
           {/* Footer Text */}
           <div className="text-center text-sm text-gray-400 font-medium mt-4">
-            Find the correct close button to continue
+            Click the X button to continue watching
           </div>
         </div>
       </div>
