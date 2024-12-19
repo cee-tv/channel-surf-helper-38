@@ -16,9 +16,8 @@ const Index = () => {
   };
 
   const handlePreviousChannel = () => {
-    // Add debounce to prevent rapid channel changes
     const now = Date.now();
-    if (now - lastKeyPressTime.current < 300) return; // 300ms debounce
+    if (now - lastKeyPressTime.current < 300) return;
     lastKeyPressTime.current = now;
 
     const currentIndex = channels.findIndex((c) => c.id === currentChannel.id);
@@ -27,9 +26,8 @@ const Index = () => {
   };
 
   const handleNextChannel = () => {
-    // Add debounce to prevent rapid channel changes
     const now = Date.now();
-    if (now - lastKeyPressTime.current < 300) return; // 300ms debounce
+    if (now - lastKeyPressTime.current < 300) return;
     lastKeyPressTime.current = now;
 
     const currentIndex = channels.findIndex((c) => c.id === currentChannel.id);
@@ -49,7 +47,6 @@ const Index = () => {
     }
   };
 
-  // Auto fullscreen on mount
   useEffect(() => {
     const enterFullscreen = async () => {
       try {
@@ -64,7 +61,6 @@ const Index = () => {
     enterFullscreen();
   }, []);
 
-  // Add keyboard event listener
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.key) {
@@ -75,17 +71,13 @@ const Index = () => {
           handleNextChannel();
           break;
         case "ArrowLeft":
-          setShowChannels(true);
+          if (!showChannels) {
+            setShowChannels(true);
+          }
           setShowControlGuide(false);
           break;
         case "ArrowRight":
-          if (showChannels) {
-            setShowChannels(false);
-          } else if (showControlGuide) {
-            setShowControlGuide(false);
-          } else {
-            setShowControlGuide(true);
-          }
+          setShowControlGuide((prev) => !prev);
           break;
         default:
           break;
@@ -116,7 +108,7 @@ const Index = () => {
             setShowChannels(false);
             changeChannel(channel);
           }}
-          onClose={toggleChannels}
+          onClose={() => setShowChannels(false)}
         />
       )}
 
@@ -127,10 +119,10 @@ const Index = () => {
             <div className="space-y-2">
               <p>⬆️ Previous Channel</p>
               <p>⬇️ Next Channel</p>
-              <p>⬅️ Open Channel List</p>
+              <p>⬅️ Show/Hide Channel List</p>
               <p>➡️ Show/Hide Controls Guide</p>
             </div>
-            <p className="text-sm text-gray-400 mt-4">Press right arrow to dismiss</p>
+            <p className="text-sm text-gray-400 mt-4">Press right arrow to toggle guide</p>
           </div>
         </div>
       )}
