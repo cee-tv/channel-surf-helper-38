@@ -56,14 +56,17 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
       {/* Loading Indicator */}
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-          <Loader2 className="w-12 h-12 text-white animate-spin" />
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-16 h-16 text-white animate-spin" />
+            <span className="text-white text-lg font-medium">Loading channel...</span>
+          </div>
         </div>
       )}
 
-      {/* Custom Controls */}
+      {/* Persistent Controls */}
       <div 
-        className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 transition-opacity duration-300 ${isFullscreen ? 'opacity-100' : showControls ? 'opacity-100' : 'opacity-0'}`}
-        onClick={(e) => e.stopPropagation()} // Stop propagation here
+        className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4"
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-4">
           <Button
