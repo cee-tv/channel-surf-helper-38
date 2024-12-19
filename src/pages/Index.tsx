@@ -9,18 +9,29 @@ const Index = () => {
   const [showChannels, setShowChannels] = useState(false);
   const [showControlGuide, setShowControlGuide] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const lastKeyPressTime = useRef<number>(0);
 
   const changeChannel = (channel: Channel) => {
     setCurrentChannel(channel);
   };
 
   const handlePreviousChannel = () => {
+    // Add debounce to prevent rapid channel changes
+    const now = Date.now();
+    if (now - lastKeyPressTime.current < 300) return; // 300ms debounce
+    lastKeyPressTime.current = now;
+
     const currentIndex = channels.findIndex((c) => c.id === currentChannel.id);
     const previousIndex = currentIndex > 0 ? currentIndex - 1 : channels.length - 1;
     changeChannel(channels[previousIndex]);
   };
 
   const handleNextChannel = () => {
+    // Add debounce to prevent rapid channel changes
+    const now = Date.now();
+    if (now - lastKeyPressTime.current < 300) return; // 300ms debounce
+    lastKeyPressTime.current = now;
+
     const currentIndex = channels.findIndex((c) => c.id === currentChannel.id);
     const nextIndex = currentIndex < channels.length - 1 ? currentIndex + 1 : 0;
     changeChannel(channels[nextIndex]);
@@ -70,6 +81,8 @@ const Index = () => {
         case "ArrowRight":
           if (showChannels) {
             setShowChannels(false);
+          } else if (showControlGuide) {
+            setShowControlGuide(false);
           } else {
             setShowControlGuide(true);
           }
@@ -81,7 +94,7 @@ const Index = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentChannel, showChannels]);
+  }, [currentChannel, showChannels, showControlGuide]);
 
   return (
     <div ref={containerRef} className="relative w-full h-screen bg-black">
@@ -117,7 +130,7 @@ const Index = () => {
               <p>⬅️ Open Channel List</p>
               <p>➡️ Show/Hide Controls Guide</p>
             </div>
-            <p className="text-sm text-gray-400 mt-4">Press any key to dismiss</p>
+            <p className="text-sm text-gray-400 mt-4">Press right arrow to dismiss</p>
           </div>
         </div>
       )}
