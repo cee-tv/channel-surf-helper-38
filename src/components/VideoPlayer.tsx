@@ -27,11 +27,22 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
     console.error("Video player error:", error);
   }
 
+  const handleScreenClick = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch (err) {
+      console.error("Error attempting to enable fullscreen:", err);
+    }
+  };
+
   return (
     <div 
       className="relative w-full h-full bg-black"
       onMouseEnter={() => !isFullscreen && setShowControls(true)}
       onMouseLeave={() => !isFullscreen && setShowControls(false)}
+      onClick={handleScreenClick}
     >
       <video
         ref={videoRef}
@@ -46,7 +57,10 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
             variant="ghost"
             size="icon"
             className="text-white hover:bg-white/20"
-            onClick={() => togglePlay(videoRef)}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent fullscreen trigger
+              togglePlay(videoRef);
+            }}
           >
             {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
           </Button>
@@ -55,12 +69,15 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
             variant="ghost"
             size="icon"
             className="text-white hover:bg-white/20"
-            onClick={() => toggleMute(videoRef)}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent fullscreen trigger
+              toggleMute(videoRef);
+            }}
           >
             {isMuted ? <VolumeX className="h-6 w-6" /> : <Volume2 className="h-6 w-6" />}
           </Button>
 
-          <div className="w-24">
+          <div className="w-24" onClick={(e) => e.stopPropagation()}>
             <Slider
               value={[volume * 100]}
               max={100}
