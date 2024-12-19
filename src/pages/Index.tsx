@@ -7,7 +7,6 @@ import { channels, Channel } from "@/lib/channels";
 const Index = () => {
   const [currentChannel, setCurrentChannel] = useState<Channel>(channels[0]);
   const [showChannels, setShowChannels] = useState(false);
-  const [showControlGuide, setShowControlGuide] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const changeChannel = (channel: Channel) => {
@@ -28,12 +27,6 @@ const Index = () => {
 
   const toggleChannels = () => {
     setShowChannels((prev) => !prev);
-    setShowControlGuide(false);
-  };
-
-  const toggleControlGuide = () => {
-    setShowControlGuide((prev) => !prev);
-    setShowChannels(false);
   };
 
   const toggleFullscreen = () => {
@@ -62,18 +55,6 @@ const Index = () => {
   // Add keyboard event listener
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (showChannels) {
-        // Close channel list on any key press
-        setShowChannels(false);
-        return;
-      }
-
-      if (showControlGuide) {
-        // Dismiss control guide on any key press
-        setShowControlGuide(false);
-        return;
-      }
-
       switch (event.key) {
         case "ArrowUp":
           handlePreviousChannel();
@@ -85,7 +66,9 @@ const Index = () => {
           setShowChannels(true);
           break;
         case "ArrowRight":
-          setShowControlGuide(true);
+          if (showChannels) {
+            setShowChannels(false);
+          }
           break;
         default:
           break;
@@ -94,7 +77,7 @@ const Index = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentChannel, showChannels, showControlGuide]);
+  }, [currentChannel, showChannels]);
 
   return (
     <div ref={containerRef} className="relative w-full h-screen bg-black">
@@ -118,19 +101,6 @@ const Index = () => {
           }}
           onClose={toggleChannels}
         />
-      )}
-
-      {showControlGuide && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 text-white">
-          <div className="bg-black/90 p-8 rounded-lg space-y-4">
-            <h2 className="text-xl font-bold mb-4">Keyboard Controls</h2>
-            <p>↑ Previous Channel</p>
-            <p>↓ Next Channel</p>
-            <p>← Open Channel List</p>
-            <p>→ Show This Guide</p>
-            <p className="text-sm text-gray-400 mt-4">Press any key to dismiss</p>
-          </div>
-        </div>
       )}
     </div>
   );
