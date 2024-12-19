@@ -1,9 +1,9 @@
-import { Channel } from "@/lib/channels";
 import { Volume2, VolumeX, Play, Pause, Loader2 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { useShaka } from "@/hooks/useShaka";
 import { useVideoControls } from "@/hooks/useVideoControls";
+import { Channel } from "@/lib/channels";
 
 interface VideoPlayerProps {
   channel: Channel;
@@ -61,8 +61,11 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
         </div>
       )}
 
-      {/* Custom Controls - Always visible in fullscreen */}
-      <div className={`video-controls absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 transition-opacity duration-300 z-[50] ${showControls || document.fullscreenElement ? 'opacity-100' : 'opacity-0'}`}>
+      <div 
+        className={`video-controls absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 transition-opacity duration-300 z-[50] ${
+          showControls || document.fullscreenElement ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
