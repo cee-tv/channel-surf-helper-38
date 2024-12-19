@@ -22,15 +22,33 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
     updateVolume
   } = useVideoControls();
 
+  const handleVideoClick = async (event: React.MouseEvent) => {
+    // Prevent click from triggering when clicking controls
+    if ((event.target as HTMLElement).closest('.video-controls')) {
+      return;
+    }
+
+    try {
+      if (!document.fullscreenElement) {
+        await videoRef.current?.parentElement?.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (error) {
+      console.error("Error toggling fullscreen:", error);
+    }
+  };
+
   if (error) {
     console.error("Video player error:", error);
   }
 
   return (
     <div 
-      className="relative w-full h-full bg-black"
+      className="relative w-full h-full bg-black cursor-pointer"
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
+      onClick={handleVideoClick}
     >
       <video
         ref={videoRef}
@@ -39,7 +57,7 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
       />
 
       {/* Custom Controls */}
-      <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 transition-opacity duration-300 ${showControls ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`video-controls absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 transition-opacity duration-300 ${showControls ? 'opacity-100' : 'opacity-0'}`}>
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
