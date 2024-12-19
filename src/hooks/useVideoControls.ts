@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 export const useVideoControls = () => {
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [volume, setVolume] = useState(1);
-  const [isMuted, setIsMuted] = useState(false);
-  const [showControls, setShowControls] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(true);
+  const [volume, setVolume] = useState<number>(1);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [showControls, setShowControls] = useState<boolean>(false);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -18,18 +18,20 @@ export const useVideoControls = () => {
     };
   }, []);
 
-  const togglePlay = (videoRef: React.RefObject<HTMLVideoElement>) => {
+  const togglePlay = useCallback((videoRef: React.RefObject<HTMLVideoElement>) => {
     if (!videoRef.current) return;
+    
     if (isPlaying) {
       videoRef.current.pause();
     } else {
       videoRef.current.play();
     }
     setIsPlaying(!isPlaying);
-  };
+  }, [isPlaying]);
 
-  const toggleMute = (videoRef: React.RefObject<HTMLVideoElement>) => {
+  const toggleMute = useCallback((videoRef: React.RefObject<HTMLVideoElement>) => {
     if (!videoRef.current) return;
+    
     if (isMuted) {
       setVolume(1);
       videoRef.current.volume = 1;
@@ -38,14 +40,15 @@ export const useVideoControls = () => {
       videoRef.current.volume = 0;
     }
     setIsMuted(!isMuted);
-  };
+  }, [isMuted]);
 
-  const updateVolume = (videoRef: React.RefObject<HTMLVideoElement>, newVolume: number) => {
+  const updateVolume = useCallback((videoRef: React.RefObject<HTMLVideoElement>, newVolume: number) => {
     if (!videoRef.current) return;
+    
     setVolume(newVolume);
     videoRef.current.volume = newVolume;
     setIsMuted(newVolume === 0);
-  };
+  }, []);
 
   return {
     isPlaying,
