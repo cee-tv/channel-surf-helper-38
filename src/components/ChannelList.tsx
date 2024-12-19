@@ -113,6 +113,10 @@ export const ChannelList = ({
             ))}
           </div>
         </ScrollArea>
+        
+        <div className="absolute bottom-4 left-4 right-4 text-center">
+          <p className="text-sm text-white/70">Press ⬅️ to exit channels list</p>
+        </div>
       </div>
     </div>
   );
