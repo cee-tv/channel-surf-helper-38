@@ -37,22 +37,22 @@ export const useShaka = (channel: Channel) => {
       // Optimize buffering and playback
       player.configure({
         streaming: {
-          bufferingGoal: 10, // Reduced from 30 for faster initial load
-          rebufferingGoal: 5, // Reduced from 15 for faster recovery
-          bufferBehind: 20, // Reduced from 30 to free up memory
+          bufferingGoal: 10,
+          rebufferingGoal: 5,
+          bufferBehind: 20,
           retryParameters: {
-            maxAttempts: 2, // Reduced from 3 for faster fallback
-            baseDelay: 250, // Reduced from 500 for faster retry
-            backoffFactor: 1.2, // Reduced from 1.5 for faster retry progression
-            timeout: 10000 // Reduced from 20000 for faster timeout
+            maxAttempts: 2,
+            baseDelay: 250,
+            backoffFactor: 1.2,
+            timeout: 10000
           }
         },
         abr: {
           enabled: true,
-          defaultBandwidthEstimate: 5000000, // Increased for faster initial quality
-          switchInterval: 2, // Reduced from 4 for faster quality switches
-          bandwidthUpgradeTarget: 0.9, // Increased from 0.85 for faster quality upgrades
-          bandwidthDowngradeTarget: 0.7 // Reduced from 0.95 for faster downgrades
+          defaultBandwidthEstimate: 5000000,
+          switchInterval: 2,
+          bandwidthUpgradeTarget: 0.9,
+          bandwidthDowngradeTarget: 0.7
         },
         manifest: {
           retryParameters: {
@@ -61,8 +61,7 @@ export const useShaka = (channel: Channel) => {
             backoffFactor: 1.2,
             timeout: 10000
           }
-        },
-        preferNativeHls: true // Enable native HLS playback when available
+        }
       });
 
       player.addEventListener("error", (event: any) => {
