@@ -29,21 +29,6 @@ const Index = () => {
     setShowChannels((prev) => !prev);
   };
 
-  // Auto fullscreen on component mount
-  useEffect(() => {
-    const enterFullscreen = async () => {
-      try {
-        if (containerRef.current && !document.fullscreenElement) {
-          await containerRef.current.requestFullscreen();
-        }
-      } catch (error) {
-        console.error("Error attempting to enable full-screen mode:", error);
-      }
-    };
-    
-    enterFullscreen();
-  }, []);
-
   // Add keyboard event listener
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -58,9 +43,7 @@ const Index = () => {
           setShowChannels(true);
           break;
         case "ArrowRight":
-          if (showChannels) {
-            setShowChannels(false);
-          }
+          setShowChannels(false);
           break;
         default:
           break;
@@ -69,7 +52,7 @@ const Index = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentChannel, showChannels]);
+  }, [currentChannel]);
 
   return (
     <div ref={containerRef} className="relative w-full h-screen bg-black">
@@ -90,7 +73,7 @@ const Index = () => {
             setShowChannels(false);
             changeChannel(channel);
           }}
-          onClose={toggleChannels}
+          onClose={() => setShowChannels(false)}
         />
       )}
     </div>
