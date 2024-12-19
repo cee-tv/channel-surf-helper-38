@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Channel } from "@/lib/channels";
 import { SearchBar } from "./SearchBar";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -20,6 +20,7 @@ export const ChannelList = ({
 }: ChannelListProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const selectedButtonRef = useRef<HTMLButtonElement>(null);
 
   const filteredChannels = channels.filter((channel) =>
     channel.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -66,6 +67,16 @@ export const ChannelList = ({
     }
   }, [currentChannel, filteredChannels]);
 
+  // Auto-scroll to keep selected channel in view
+  useEffect(() => {
+    if (selectedButtonRef.current) {
+      selectedButtonRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }
+  }, [selectedIndex]);
+
   return (
     <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm animate-fade-in">
       <div className="absolute left-0 top-0 h-full w-72 bg-black/80 p-4 shadow-xl animate-slide-in-left">
@@ -88,6 +99,7 @@ export const ChannelList = ({
             {filteredChannels.map((channel, index) => (
               <Button
                 key={channel.id}
+                ref={index === selectedIndex ? selectedButtonRef : null}
                 variant={index === selectedIndex ? "secondary" : "ghost"}
                 className={`w-full justify-start text-left ${
                   index === selectedIndex
