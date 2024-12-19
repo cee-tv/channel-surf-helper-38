@@ -32,7 +32,7 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
       if (!document.fullscreenElement) {
         await videoRef.current?.parentElement?.requestFullscreen();
       }
-      setShowControls(true); // Always show controls on tap
+      setShowControls(true);
     } catch (error) {
       console.error("Error toggling fullscreen:", error);
     }
@@ -46,7 +46,7 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
     <div 
       className="relative w-full h-full bg-black cursor-pointer group"
       onMouseEnter={() => setShowControls(true)}
-      onMouseLeave={() => setShowControls(false)}
+      onMouseLeave={() => !document.fullscreenElement && setShowControls(false)}
       onClick={handleVideoClick}
     >
       <video
@@ -55,7 +55,6 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
         autoPlay
       />
 
-      {/* Buffering Indicator */}
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/30">
           <Loader2 className="w-12 h-12 text-white animate-spin" />
@@ -63,7 +62,7 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
       )}
 
       {/* Custom Controls - Always visible in fullscreen */}
-      <div className={`video-controls absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 transition-opacity duration-300 z-50 ${document.fullscreenElement ? 'opacity-100' : showControls ? 'opacity-100' : 'opacity-0'} group-hover:opacity-100`}>
+      <div className={`video-controls absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 transition-opacity duration-300 z-[50] ${showControls || document.fullscreenElement ? 'opacity-100' : 'opacity-0'}`}>
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"

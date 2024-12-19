@@ -27,7 +27,7 @@ export const ChannelControls = ({
         </Button>
       </div>
       
-      <div className={`absolute top-4 right-4 z-[55] flex items-center gap-2 bg-black/40 px-4 py-2 rounded-lg backdrop-blur-sm ${document.fullscreenElement ? 'opacity-100' : ''}`}>
+      <div className="absolute top-4 right-4 z-[55] flex items-center gap-2 bg-black/40 px-4 py-2 rounded-lg backdrop-blur-sm">
         <span className="text-white font-medium">{channelName}</span>
       </div>
 
