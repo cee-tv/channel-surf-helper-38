@@ -116,7 +116,7 @@ export const channels: Channel[] = [
     id: "16",
     name: "TFC",
     logo: "https://raw.githubusercontent.com/Raulabdul666/Drmpicture/refs/heads/main/Picsart_24-10-17_11-27-24-996.jpg",
-    drmKey: "9568cc84e1d944f38eac304517eab6fd:f12142af8f39b3bab79d3679d3665ebe",
+    drmKey: "f12142af8f39b3bab79d3679d3665ebe:9568cc84e1d944f38eac304517eab6fd",
     url: "https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg01006-abs-cbn-tfcasia-dash-abscbnono/index.mpd",
   },
   {
