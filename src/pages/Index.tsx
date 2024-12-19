@@ -29,13 +29,20 @@ const Index = () => {
     setShowChannels((prev) => !prev);
   };
 
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      containerRef.current?.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
-  };
+  // Auto fullscreen on component mount
+  useEffect(() => {
+    const enterFullscreen = async () => {
+      try {
+        if (containerRef.current && !document.fullscreenElement) {
+          await containerRef.current.requestFullscreen();
+        }
+      } catch (error) {
+        console.error("Error attempting to enable full-screen mode:", error);
+      }
+    };
+    
+    enterFullscreen();
+  }, []);
 
   // Add keyboard event listener
   useEffect(() => {
@@ -62,7 +69,7 @@ const Index = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentChannel, showChannels]); // Added showChannels as dependency since we use it in the handler
+  }, [currentChannel, showChannels]);
 
   return (
     <div ref={containerRef} className="relative w-full h-screen bg-black">
@@ -73,7 +80,6 @@ const Index = () => {
         onPrevious={handlePreviousChannel}
         onNext={handleNextChannel}
         onShowChannels={toggleChannels}
-        onToggleFullscreen={toggleFullscreen}
       />
 
       {showChannels && (
