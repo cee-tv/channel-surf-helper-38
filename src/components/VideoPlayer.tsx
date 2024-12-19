@@ -31,9 +31,9 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
     try {
       if (!document.fullscreenElement) {
         await videoRef.current?.parentElement?.requestFullscreen();
-      } else {
-        await document.exitFullscreen();
       }
+      // Remove the else clause that was exiting fullscreen
+      setShowControls(true); // Always show controls on tap
     } catch (error) {
       console.error("Error toggling fullscreen:", error);
     }
