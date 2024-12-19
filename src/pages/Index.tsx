@@ -7,7 +7,7 @@ import { channels, Channel } from "@/lib/channels";
 const Index = () => {
   const [currentChannel, setCurrentChannel] = useState<Channel>(channels[0]);
   const [showChannels, setShowChannels] = useState(false);
-  const [showControlGuide, setShowControlGuide] = useState(false);
+  const [showControlGuide, setShowControlGuide] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const lastKeyPressTime = useRef<number>(0);
 
@@ -59,6 +59,15 @@ const Index = () => {
     };
     
     enterFullscreen();
+  }, []);
+
+  // Auto-hide control guide after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowControlGuide(false);
+    }, 5000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {

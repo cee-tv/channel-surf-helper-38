@@ -97,7 +97,7 @@ export const ChannelList = ({
         
         <SearchBar onSearch={setSearchQuery} />
         
-        <ScrollArea className="h-[calc(100vh-240px)] mt-4 pr-4">
+        <ScrollArea className="h-[calc(100vh-180px)] mt-4 pr-4">
           <div className="space-y-2">
             {filteredChannels.map((channel, index) => (
               <Button
@@ -116,12 +116,6 @@ export const ChannelList = ({
             ))}
           </div>
         </ScrollArea>
-
-        <div className="absolute bottom-4 left-0 right-0 px-4">
-          <p className="text-white/70 text-sm text-center">
-            Press ← left arrow to close
-          </p>
-        </div>
       </div>
     </div>
   );
