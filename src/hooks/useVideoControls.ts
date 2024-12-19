@@ -1,10 +1,22 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export const useVideoControls = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
 
   const togglePlay = (videoRef: React.RefObject<HTMLVideoElement>) => {
     if (!videoRef.current) return;
@@ -39,6 +51,7 @@ export const useVideoControls = () => {
     isPlaying,
     volume,
     isMuted,
+    isFullscreen,
     showControls,
     setShowControls,
     togglePlay,
