@@ -32,7 +32,6 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
       if (!document.fullscreenElement) {
         await videoRef.current?.parentElement?.requestFullscreen();
       }
-      // Remove the else clause that was exiting fullscreen
       setShowControls(true); // Always show controls on tap
     } catch (error) {
       console.error("Error toggling fullscreen:", error);
@@ -63,8 +62,8 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
         </div>
       )}
 
-      {/* Custom Controls */}
-      <div className={`video-controls absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 transition-opacity duration-300 z-50 ${showControls ? 'opacity-100' : 'opacity-0'} group-hover:opacity-100`}>
+      {/* Custom Controls - Always visible in fullscreen */}
+      <div className={`video-controls absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 transition-opacity duration-300 z-50 ${document.fullscreenElement ? 'opacity-100' : showControls ? 'opacity-100' : 'opacity-0'} group-hover:opacity-100`}>
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
