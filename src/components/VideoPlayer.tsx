@@ -1,5 +1,5 @@
 import { Channel } from "@/lib/channels";
-import { Volume2, VolumeX, Play, Pause } from "lucide-react";
+import { Volume2, VolumeX, Play, Pause, Loader2 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { useShaka } from "@/hooks/useShaka";
@@ -56,8 +56,15 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
         autoPlay
       />
 
+      {/* Buffering Indicator */}
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+          <Loader2 className="w-12 h-12 text-white animate-spin" />
+        </div>
+      )}
+
       {/* Custom Controls */}
-      <div className={`video-controls absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 transition-opacity duration-300 ${showControls ? 'opacity-100' : 'opacity-0'}`}>
+      <div className="video-controls absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 transition-opacity duration-300 z-50 ${showControls ? 'opacity-100' : 'opacity-0'}">
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"

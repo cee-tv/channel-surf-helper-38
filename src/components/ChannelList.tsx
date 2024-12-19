@@ -79,7 +79,7 @@ export const ChannelList = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm animate-fade-in">
-      <div className="absolute left-0 top-0 h-full w-72 bg-black/80 p-4 shadow-xl animate-slide-in-left">
+      <div className="absolute left-0 top-0 h-full w-72 bg-black/80 backdrop-blur-md p-4 shadow-xl animate-slide-in-left">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-white">Channels</h2>
           <Button 
