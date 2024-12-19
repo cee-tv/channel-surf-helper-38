@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { ChannelList } from "@/components/ChannelList";
 import { ChannelControls } from "@/components/ChannelControls";
@@ -13,7 +13,7 @@ const Index = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const changeChannel = (channel: Channel) => {
-    setCurrentChannel(channel); // Update channel immediately
+    setCurrentChannel(channel);
     setNextChannel(channel);
     setShowAd(true);
   };
@@ -48,6 +48,28 @@ const Index = () => {
       document.exitFullscreen();
     }
   };
+
+  // Add keyboard event listener
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      switch (event.key) {
+        case "ArrowUp":
+          handlePreviousChannel();
+          break;
+        case "ArrowDown":
+          handleNextChannel();
+          break;
+        case "ArrowLeft":
+          setShowChannels(true);
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentChannel]); // Add currentChannel as dependency since we use it in the handlers
 
   return (
     <div ref={containerRef} className="relative w-full h-screen bg-black">
