@@ -1,11 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Menu, Maximize2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Menu } from "lucide-react";
 
 interface ChannelControlsProps {
   onPrevious: () => void;
   onNext: () => void;
-  onShowChannels: () => void;  
-  onToggleFullscreen: () => void;
+  onShowChannels: () => void;
   channelName: string;
 }
 
@@ -13,7 +12,6 @@ export const ChannelControls = ({
   onPrevious,
   onNext,
   onShowChannels,
-  onToggleFullscreen,
   channelName,
 }: ChannelControlsProps) => {
   return (
@@ -49,17 +47,6 @@ export const ChannelControls = ({
           onClick={onNext}
         >
           <ChevronRight className="h-8 w-8" />
-        </Button>
-      </div>
-
-      <div className="absolute bottom-4 right-4 z-40">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="bg-black/60 hover:bg-black/80 text-white"
-          onClick={onToggleFullscreen}
-        >
-          <Maximize2 className="h-6 w-6" />
         </Button>
       </div>
     </>
