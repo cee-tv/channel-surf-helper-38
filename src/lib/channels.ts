@@ -116,7 +116,8 @@ export const channels: Channel[] = [
     id: "16",
     name: "TFC",
     logo: "https://raw.githubusercontent.com/Raulabdul666/Drmpicture/refs/heads/main/Picsart_24-10-17_11-27-24-996.jpg",
-    url: "https://tfcguam-abscbn-ono.amagi.tv/index.m3u8",
+    drmKey: "9568cc84e1d944f38eac304517eab6fd:f12142af8f39b3bab79d3679d3665ebe",
+    url: "https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg01006-abs-cbn-tfcasia-dash-abscbnono/index.mpd",
   },
   {
     id: "17",
