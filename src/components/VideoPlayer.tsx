@@ -23,10 +23,6 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
     updateVolume
   } = useVideoControls();
 
-  if (error) {
-    console.error("Video player error:", error);
-  }
-
   const handleScreenClick = async () => {
     try {
       if (!document.fullscreenElement) {
@@ -37,12 +33,19 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
     }
   };
 
+  const handleDoubleClick = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    }
+  };
+
   return (
     <div 
       className="relative w-full h-full bg-black"
       onMouseEnter={() => !isFullscreen && setShowControls(true)}
       onMouseLeave={() => !isFullscreen && setShowControls(false)}
       onClick={handleScreenClick}
+      onDoubleClick={handleDoubleClick}
     >
       <video
         ref={videoRef}
