@@ -31,26 +31,13 @@ const Index = () => {
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
-      containerRef.current?.requestFullscreen();
+      containerRef.current?.requestFullscreen().catch((err) => {
+        console.error("Error attempting to enable fullscreen:", err);
+      });
     } else {
       document.exitFullscreen();
     }
   };
-
-  // Auto fullscreen on mount
-  useEffect(() => {
-    const enterFullscreen = async () => {
-      try {
-        if (containerRef.current && !document.fullscreenElement) {
-          await containerRef.current.requestFullscreen();
-        }
-      } catch (err) {
-        console.error("Error attempting to enable fullscreen:", err);
-      }
-    };
-    
-    enterFullscreen();
-  }, []);
 
   // Add keyboard event listener
   useEffect(() => {
