@@ -21,6 +21,7 @@ export const ChannelList = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const selectedButtonRef = useRef<HTMLButtonElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   const filteredChannels = channels.filter((channel) =>
     channel.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -67,13 +68,22 @@ export const ChannelList = ({
     }
   }, [currentChannel, filteredChannels]);
 
-  // Auto-scroll to keep selected channel in view
+  // Improved scroll behavior
   useEffect(() => {
-    if (selectedButtonRef.current) {
-      selectedButtonRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-      });
+    if (selectedButtonRef.current && scrollAreaRef.current) {
+      const button = selectedButtonRef.current;
+      const container = scrollAreaRef.current;
+      
+      const buttonRect = button.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      
+      // Check if button is not fully visible
+      if (buttonRect.bottom > containerRect.bottom || buttonRect.top < containerRect.top) {
+        button.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest'
+        });
+      }
     }
   }, [selectedIndex]);
 
@@ -94,7 +104,10 @@ export const ChannelList = ({
         
         <SearchBar onSearch={setSearchQuery} />
         
-        <ScrollArea className="h-[calc(100vh-180px)] mt-4 pr-4">
+        <div 
+          ref={scrollAreaRef} 
+          className="h-[calc(100vh-180px)] mt-4 pr-4 overflow-y-auto"
+        >
           <div className="space-y-2">
             {filteredChannels.map((channel, index) => (
               <Button
@@ -112,7 +125,7 @@ export const ChannelList = ({
               </Button>
             ))}
           </div>
-        </ScrollArea>
+        </div>
       </div>
     </div>
   );
