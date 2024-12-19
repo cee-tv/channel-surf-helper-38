@@ -6,10 +6,15 @@ export const useShaka = (channel: Channel) => {
   const shakaPlayerRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const destroyPlayer = async () => {
     if (shakaPlayerRef.current) {
       try {
+        // Cancel any pending requests
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+        }
         await shakaPlayerRef.current.destroy();
         shakaPlayerRef.current = null;
       } catch (error) {
@@ -30,37 +35,46 @@ export const useShaka = (channel: Channel) => {
       }
 
       await destroyPlayer();
+      
+      // Create new abort controller for this initialization
+      abortControllerRef.current = new AbortController();
+      
       const player = new shaka.Player();
       await player.attach(videoRef.current);
       shakaPlayerRef.current = player;
 
-      // Optimize streaming configuration for smooth playback
+      // Configure network handling
       player.configure({
         streaming: {
-          // Reduce buffer sizes for faster initial loading
-          bufferingGoal: 10,
-          rebufferingGoal: 2,
+          // Increase buffer sizes for stability
+          bufferingGoal: 30,
+          rebufferingGoal: 15,
           bufferBehind: 30,
-          // Optimize network retry settings
+          // Aggressive retry settings
           retryParameters: {
-            maxAttempts: 5,
+            maxAttempts: 8,
             baseDelay: 1000,
             backoffFactor: 2,
-            timeout: 30000,
+            timeout: 60000,
             fuzzFactor: 0.5
           },
-          // Enable low latency streaming
-          lowLatencyMode: true,
-          // Optimize segment prefetch
-          segmentPrefetchLimit: 3
+          // Disable low latency mode for more stable playback
+          lowLatencyMode: false,
+          // Reduce segment prefetch to avoid too many parallel requests
+          segmentPrefetchLimit: 2,
+          // Add gap jumping for smoother playback
+          jumpLargeGaps: true,
+          smallGapLimit: 1.5,
+          // Add stall detection and recovery
+          stallThreshold: 1,
+          stallSkip: 0.1
         },
-        // Optimize adaptive bitrate settings
         abr: {
           enabled: true,
-          defaultBandwidthEstimate: 1000000, // 1Mbps initial estimate
+          defaultBandwidthEstimate: 1000000,
           switchInterval: 8,
-          bandwidthUpgradeTarget: 0.85,
-          bandwidthDowngradeTarget: 0.95,
+          bandwidthUpgradeTarget: 0.9,
+          bandwidthDowngradeTarget: 0.7,
           restrictions: {
             minHeight: 360,
             maxHeight: 1080
@@ -68,26 +82,37 @@ export const useShaka = (channel: Channel) => {
         },
         manifest: {
           retryParameters: {
-            maxAttempts: 5,
+            maxAttempts: 8,
             baseDelay: 1000,
             backoffFactor: 2,
-            timeout: 30000,
+            timeout: 60000,
             fuzzFactor: 0.5
           },
           dash: {
-            // Enable DASH specific optimizations
             ignoreMinBufferTime: true,
-            clockSyncUri: ''
+            clockSyncUri: '',
+            ignoreSuggestedPresentationDelay: true
           }
         }
       });
 
-      player.addEventListener("error", (event: any) => {
+      // Enhanced error handling
+      player.addEventListener("error", async (event: any) => {
         console.error("Player error:", event.detail);
-        setError(event.detail.message);
-        // Attempt to recover from error
-        if (videoRef.current) {
-          videoRef.current.load();
+        
+        // Only set error if it's not an abort error
+        if (event.detail.code !== 7000 && event.detail.code !== 1001) {
+          setError(event.detail.message);
+          
+          // Attempt recovery
+          try {
+            await player.retryStreaming();
+          } catch (retryError) {
+            console.error("Recovery failed:", retryError);
+            if (videoRef.current) {
+              videoRef.current.load();
+            }
+          }
         }
       });
 
@@ -95,6 +120,15 @@ export const useShaka = (channel: Channel) => {
       videoRef.current.addEventListener('waiting', () => setIsLoading(true));
       videoRef.current.addEventListener('playing', () => setIsLoading(false));
       videoRef.current.addEventListener('canplay', () => setIsLoading(false));
+
+      // Add stall detection
+      videoRef.current.addEventListener('stalled', async () => {
+        try {
+          await player.retryStreaming();
+        } catch (error) {
+          console.error("Stall recovery failed:", error);
+        }
+      });
 
       if (channel.drmKey) {
         const [keyId, key] = channel.drmKey.split(':');
@@ -104,7 +138,7 @@ export const useShaka = (channel: Channel) => {
               [keyId]: key
             },
             retryParameters: {
-              maxAttempts: 3,
+              maxAttempts: 5,
               baseDelay: 1000,
               backoffFactor: 2,
               fuzzFactor: 0.5
@@ -119,7 +153,7 @@ export const useShaka = (channel: Channel) => {
         videoRef.current.autoplay = true;
       }
 
-      await player.load(channel.url);
+      await player.load(channel.url, null, 'video/mp4');
       if (videoRef.current) {
         videoRef.current.play();
       }
