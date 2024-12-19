@@ -34,32 +34,49 @@ export const useShaka = (channel: Channel) => {
       await player.attach(videoRef.current);
       shakaPlayerRef.current = player;
 
-      // Optimize buffering and playback
+      // Optimize streaming configuration for smooth playback
       player.configure({
         streaming: {
-          bufferingGoal: 10,
-          rebufferingGoal: 5,
-          bufferBehind: 20,
+          // Reduce buffer sizes for faster initial loading
+          bufferingGoal: 5,
+          rebufferingGoal: 2,
+          bufferBehind: 15,
+          // Optimize network retry settings
           retryParameters: {
-            maxAttempts: 2,
-            baseDelay: 250,
-            backoffFactor: 1.2,
-            timeout: 10000
-          }
+            maxAttempts: 3,
+            baseDelay: 100,
+            backoffFactor: 1.1,
+            timeout: 8000
+          },
+          // Enable low latency streaming
+          lowLatencyMode: true,
+          // Optimize segment prefetch
+          segmentPrefetchLimit: 2,
+          smallGapLimit: 0.5
         },
+        // Optimize adaptive bitrate settings
         abr: {
           enabled: true,
-          defaultBandwidthEstimate: 5000000,
-          switchInterval: 2,
-          bandwidthUpgradeTarget: 0.9,
-          bandwidthDowngradeTarget: 0.7
+          defaultBandwidthEstimate: 1000000, // 1Mbps initial estimate
+          switchInterval: 1,
+          bandwidthUpgradeTarget: 0.85,
+          bandwidthDowngradeTarget: 0.95,
+          restrictions: {
+            minHeight: 360,
+            maxHeight: 1080
+          }
         },
         manifest: {
           retryParameters: {
-            maxAttempts: 2,
-            baseDelay: 250,
-            backoffFactor: 1.2,
-            timeout: 10000
+            maxAttempts: 3,
+            baseDelay: 100,
+            backoffFactor: 1.1,
+            timeout: 8000
+          },
+          dash: {
+            // Enable DASH specific optimizations
+            ignoreMinBufferTime: true,
+            clockSyncUri: ''
           }
         }
       });
@@ -83,15 +100,15 @@ export const useShaka = (channel: Channel) => {
             },
             retryParameters: {
               maxAttempts: 2,
-              baseDelay: 250,
-              backoffFactor: 1.2,
+              baseDelay: 100,
+              backoffFactor: 1.1,
               fuzzFactor: 0.5
             }
           }
         });
       }
 
-      // Set low latency mode for faster playback
+      // Optimize video element settings
       if (videoRef.current) {
         videoRef.current.preload = "auto";
         videoRef.current.autoplay = true;
