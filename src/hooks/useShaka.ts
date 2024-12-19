@@ -6,15 +6,25 @@ export const useShaka = (channel: Channel) => {
   const shakaPlayerRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const destroyPlayer = async () => {
-    if (shakaPlayerRef.current) {
-      try {
+    try {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      
+      if (shakaPlayerRef.current) {
         await shakaPlayerRef.current.destroy();
         shakaPlayerRef.current = null;
-      } catch (error) {
-        console.error("Error destroying player:", error);
       }
+
+      if (videoRef.current) {
+        videoRef.current.removeAttribute('src');
+        videoRef.current.load();
+      }
+    } catch (error) {
+      console.error("Error destroying player:", error);
     }
   };
 
@@ -22,6 +32,9 @@ export const useShaka = (channel: Channel) => {
     try {
       setIsLoading(true);
       setError(null);
+      
+      // Create new abort controller for this initialization
+      abortControllerRef.current = new AbortController();
       
       // @ts-ignore
       const shaka = window.shaka;
@@ -34,7 +47,7 @@ export const useShaka = (channel: Channel) => {
       await player.attach(videoRef.current);
       shakaPlayerRef.current = player;
 
-      // Optimize buffering and playback
+      // Configure player with optimized settings
       player.configure({
         streaming: {
           bufferingGoal: 30,
@@ -45,9 +58,7 @@ export const useShaka = (channel: Channel) => {
             baseDelay: 500,
             backoffFactor: 1.5,
             timeout: 20000
-          },
-          smallGapLimit: 0.5,
-          jumpLargeGaps: true
+          }
         },
         abr: {
           enabled: true,
@@ -58,6 +69,7 @@ export const useShaka = (channel: Channel) => {
         }
       });
 
+      // Add error handler
       player.addEventListener("error", (event: any) => {
         console.error("Player error:", event.detail);
         setError(event.detail.message);
@@ -68,6 +80,7 @@ export const useShaka = (channel: Channel) => {
       videoRef.current.addEventListener('playing', () => setIsLoading(false));
       videoRef.current.addEventListener('canplay', () => setIsLoading(false));
 
+      // Configure DRM if needed
       if (channel.drmKey) {
         const [keyId, key] = channel.drmKey.split(':');
         await player.configure({
@@ -85,12 +98,20 @@ export const useShaka = (channel: Channel) => {
         });
       }
 
-      await player.load(channel.url);
+      // Load content with abort signal
+      await player.load(channel.url, null, undefined, abortControllerRef.current.signal);
+      
       if (videoRef.current) {
         videoRef.current.play();
       }
       setIsLoading(false);
     } catch (error: any) {
+      // Ignore abort errors during cleanup
+      if (error.name === 'AbortError') {
+        console.log('Request aborted during cleanup');
+        return;
+      }
+      
       console.error("Error initializing player:", error);
       setError(error.message || "Failed to load video");
       setIsLoading(false);
