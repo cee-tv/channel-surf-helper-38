@@ -4,6 +4,7 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { useShaka } from "@/hooks/useShaka";
 import { useVideoControls } from "@/hooks/useVideoControls";
+import { useState } from "react";
 
 interface VideoPlayerProps {
   channel: Channel;
@@ -23,6 +24,8 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
     updateVolume
   } = useVideoControls();
 
+  const [showGuide, setShowGuide] = useState(false);
+
   const handleScreenClick = async () => {
     try {
       if (!document.fullscreenElement) {
@@ -37,6 +40,11 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
     if (document.fullscreenElement) {
       document.exitFullscreen();
     }
+  };
+
+  const handleDoubleRightArrow = () => {
+    setShowGuide(true);
+    setTimeout(() => setShowGuide(false), 3000); // Hide after 3 seconds
   };
 
   return (
@@ -59,6 +67,19 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
           <div className="flex flex-col items-center gap-4">
             <Loader2 className="w-16 h-16 text-white animate-spin" />
             <span className="text-white text-lg font-medium">Loading channel...</span>
+          </div>
+        </div>
+      )}
+
+      {/* Keyboard Controls Guide */}
+      {showGuide && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/80 p-6 rounded-lg z-50">
+          <div className="text-white space-y-2">
+            <h3 className="text-lg font-bold mb-4">Keyboard Controls</h3>
+            <p>↑ Previous Channel</p>
+            <p>↓ Next Channel</p>
+            <p>← Show Channel List</p>
+            <p>→ Hide Channel List</p>
           </div>
         </div>
       )}
@@ -102,6 +123,18 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
               onValueChange={(value) => updateVolume(videoRef, value[0] / 100)}
             />
           </div>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-white hover:bg-white/20 ml-auto"
+            onDoubleClick={(e) => {
+              e.stopPropagation();
+              handleDoubleRightArrow();
+            }}
+          >
+            <span className="font-bold">⏩</span>
+          </Button>
         </div>
       </div>
     </div>
