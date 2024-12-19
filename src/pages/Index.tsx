@@ -7,7 +7,6 @@ import { channels, Channel } from "@/lib/channels";
 const Index = () => {
   const [currentChannel, setCurrentChannel] = useState<Channel>(channels[0]);
   const [showChannels, setShowChannels] = useState(false);
-  const [showControlGuide, setShowControlGuide] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const changeChannel = (channel: Channel) => {
@@ -28,12 +27,6 @@ const Index = () => {
 
   const toggleChannels = () => {
     setShowChannels((prev) => !prev);
-    setShowControlGuide(false);
-  };
-
-  const toggleControlGuide = () => {
-    setShowControlGuide((prev) => !prev);
-    setShowChannels(false);
   };
 
   const toggleFullscreen = () => {
@@ -71,13 +64,10 @@ const Index = () => {
           break;
         case "ArrowLeft":
           setShowChannels(true);
-          setShowControlGuide(false);
           break;
         case "ArrowRight":
           if (showChannels) {
             setShowChannels(false);
-          } else {
-            toggleControlGuide();
           }
           break;
         default:
@@ -87,7 +77,7 @@ const Index = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentChannel, showChannels, showControlGuide]);
+  }, [currentChannel, showChannels]);
 
   return (
     <div ref={containerRef} className="relative w-full h-screen bg-black">
@@ -111,19 +101,6 @@ const Index = () => {
           }}
           onClose={toggleChannels}
         />
-      )}
-
-      {showControlGuide && (
-        <div className="absolute inset-0 z-50 bg-black/80 flex items-center justify-center">
-          <div className="bg-black/60 p-8 rounded-lg text-white space-y-4">
-            <h2 className="text-xl font-bold mb-4">Control Guide</h2>
-            <p>↑ Previous Channel</p>
-            <p>↓ Next Channel</p>
-            <p>← Show Channel List</p>
-            <p>→ Show/Hide Control Guide</p>
-            <p className="text-sm text-gray-400 mt-4">Press any key to dismiss</p>
-          </div>
-        </div>
       )}
     </div>
   );
