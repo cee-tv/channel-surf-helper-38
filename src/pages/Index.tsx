@@ -2,15 +2,27 @@ import { useState, useRef, useEffect } from "react";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { ChannelList } from "@/components/ChannelList";
 import { ChannelControls } from "@/components/ChannelControls";
+import { InterstitialAd } from "@/components/InterstitialAd";
 import { channels, Channel } from "@/lib/channels";
 
 const Index = () => {
   const [currentChannel, setCurrentChannel] = useState<Channel>(channels[0]);
   const [showChannels, setShowChannels] = useState(false);
+  const [showAd, setShowAd] = useState(false);
+  const [nextChannel, setNextChannel] = useState<Channel | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const changeChannel = (channel: Channel) => {
     setCurrentChannel(channel);
+    setNextChannel(channel);
+    setShowAd(true);
+  };
+
+  const handleAdClose = () => {
+    if (nextChannel) {
+      setNextChannel(null);
+    }
+    setShowAd(false);
   };
 
   const handlePreviousChannel = () => {
@@ -29,6 +41,14 @@ const Index = () => {
     setShowChannels((prev) => !prev);
   };
 
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      containerRef.current?.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
   // Add keyboard event listener
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -42,9 +62,6 @@ const Index = () => {
         case "ArrowLeft":
           setShowChannels(true);
           break;
-        case "ArrowRight":
-          setShowChannels(false);
-          break;
         default:
           break;
       }
@@ -52,7 +69,7 @@ const Index = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentChannel]);
+  }, [currentChannel]); // Add currentChannel as dependency since we use it in the handlers
 
   return (
     <div ref={containerRef} className="relative w-full h-screen bg-black">
@@ -63,6 +80,7 @@ const Index = () => {
         onPrevious={handlePreviousChannel}
         onNext={handleNextChannel}
         onShowChannels={toggleChannels}
+        onToggleFullscreen={toggleFullscreen}
       />
 
       {showChannels && (
@@ -73,8 +91,12 @@ const Index = () => {
             setShowChannels(false);
             changeChannel(channel);
           }}
-          onClose={() => setShowChannels(false)}
+          onClose={toggleChannels}
         />
+      )}
+
+      {showAd && nextChannel && (
+        <InterstitialAd onClose={handleAdClose} nextChannel={nextChannel} />
       )}
     </div>
   );

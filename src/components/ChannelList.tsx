@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { Channel } from "@/lib/channels";
 import { SearchBar } from "./SearchBar";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -19,65 +19,14 @@ export const ChannelList = ({
   onClose,
 }: ChannelListProps) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const selectedButtonRef = useRef<HTMLButtonElement>(null);
 
   const filteredChannels = channels.filter((channel) =>
     channel.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      switch (event.key) {
-        case "ArrowUp":
-          event.preventDefault();
-          setSelectedIndex((prev) => 
-            prev > 0 ? prev - 1 : filteredChannels.length - 1
-          );
-          break;
-        case "ArrowDown":
-          event.preventDefault();
-          setSelectedIndex((prev) => 
-            prev < filteredChannels.length - 1 ? prev + 1 : 0
-          );
-          break;
-        case "Enter":
-          if (filteredChannels[selectedIndex]) {
-            onChannelSelect(filteredChannels[selectedIndex]);
-          }
-          break;
-        default:
-          break;
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [filteredChannels, selectedIndex, onChannelSelect]);
-
-  useEffect(() => {
-    if (currentChannel) {
-      const currentIndex = filteredChannels.findIndex(
-        (channel) => channel.id === currentChannel.id
-      );
-      if (currentIndex !== -1) {
-        setSelectedIndex(currentIndex);
-      }
-    }
-  }, [currentChannel, filteredChannels]);
-
-  useEffect(() => {
-    if (selectedButtonRef.current) {
-      selectedButtonRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-      });
-    }
-  }, [selectedIndex]);
-
   return (
-    <div className="fixed inset-0 z-[60] bg-black/30 backdrop-blur-sm animate-fade-in">
-      <div className="absolute left-0 top-0 h-full w-72 bg-black/80 backdrop-blur-md p-4 shadow-xl animate-slide-in-left">
+    <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm animate-fade-in">
+      <div className="absolute left-0 top-0 h-full w-72 bg-black/80 p-4 shadow-xl animate-slide-in-left">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-white">Channels</h2>
           <Button 
@@ -94,13 +43,12 @@ export const ChannelList = ({
         
         <ScrollArea className="h-[calc(100vh-180px)] mt-4 pr-4">
           <div className="space-y-2">
-            {filteredChannels.map((channel, index) => (
+            {filteredChannels.map((channel) => (
               <Button
                 key={channel.id}
-                ref={index === selectedIndex ? selectedButtonRef : null}
-                variant={index === selectedIndex ? "secondary" : "ghost"}
+                variant={channel.id === currentChannel?.id ? "secondary" : "ghost"}
                 className={`w-full justify-start text-left ${
-                  index === selectedIndex
+                  channel.id === currentChannel?.id 
                     ? "bg-white/20 text-white" 
                     : "text-white/80 hover:bg-white/10 hover:text-white"
                 }`}

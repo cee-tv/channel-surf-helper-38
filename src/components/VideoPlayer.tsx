@@ -1,9 +1,9 @@
-import { Volume2, VolumeX, Play, Pause, Loader2 } from "lucide-react";
+import { Channel } from "@/lib/channels";
+import { Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { useShaka } from "@/hooks/useShaka";
 import { useVideoControls } from "@/hooks/useVideoControls";
-import { Channel } from "@/lib/channels";
 
 interface VideoPlayerProps {
   channel: Channel;
@@ -22,32 +22,15 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
     updateVolume
   } = useVideoControls();
 
-  const handleVideoClick = async (event: React.MouseEvent) => {
-    // Prevent click from triggering when clicking controls
-    if ((event.target as HTMLElement).closest('.video-controls')) {
-      return;
-    }
-
-    try {
-      if (!document.fullscreenElement) {
-        await videoRef.current?.parentElement?.requestFullscreen();
-      }
-      setShowControls(true);
-    } catch (error) {
-      console.error("Error toggling fullscreen:", error);
-    }
-  };
-
   if (error) {
     console.error("Video player error:", error);
   }
 
   return (
     <div 
-      className="relative w-full h-full bg-black cursor-pointer group"
+      className="relative w-full h-full bg-black"
       onMouseEnter={() => setShowControls(true)}
-      onMouseLeave={() => !document.fullscreenElement && setShowControls(false)}
-      onClick={handleVideoClick}
+      onMouseLeave={() => setShowControls(false)}
     >
       <video
         ref={videoRef}
@@ -55,17 +38,8 @@ export const VideoPlayer = ({ channel }: VideoPlayerProps) => {
         autoPlay
       />
 
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-          <Loader2 className="w-12 h-12 text-white animate-spin" />
-        </div>
-      )}
-
-      <div 
-        className={`video-controls absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 transition-opacity duration-300 z-[50] ${
-          showControls || document.fullscreenElement ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
+      {/* Custom Controls */}
+      <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 transition-opacity duration-300 ${showControls ? 'opacity-100' : 'opacity-0'}`}>
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
