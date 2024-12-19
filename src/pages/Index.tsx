@@ -7,6 +7,7 @@ import { channels, Channel } from "@/lib/channels";
 const Index = () => {
   const [currentChannel, setCurrentChannel] = useState<Channel>(channels[0]);
   const [showChannels, setShowChannels] = useState(false);
+  const [showControlGuide, setShowControlGuide] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const changeChannel = (channel: Channel) => {
@@ -64,10 +65,13 @@ const Index = () => {
           break;
         case "ArrowLeft":
           setShowChannels(true);
+          setShowControlGuide(false);
           break;
         case "ArrowRight":
           if (showChannels) {
             setShowChannels(false);
+          } else {
+            setShowControlGuide(true);
           }
           break;
         default:
@@ -101,6 +105,21 @@ const Index = () => {
           }}
           onClose={toggleChannels}
         />
+      )}
+
+      {showControlGuide && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center animate-fade-in">
+          <div className="bg-black/90 p-8 rounded-lg max-w-md text-white space-y-4">
+            <h2 className="text-xl font-semibold mb-4">Keyboard Controls</h2>
+            <div className="space-y-2">
+              <p>⬆️ Previous Channel</p>
+              <p>⬇️ Next Channel</p>
+              <p>⬅️ Open Channel List</p>
+              <p>➡️ Show/Hide Controls Guide</p>
+            </div>
+            <p className="text-sm text-gray-400 mt-4">Press any key to dismiss</p>
+          </div>
+        </div>
       )}
     </div>
   );
