@@ -7,7 +7,6 @@ import { channels, Channel } from "@/lib/channels";
 const Index = () => {
   const [currentChannel, setCurrentChannel] = useState<Channel>(channels[0]);
   const [showChannels, setShowChannels] = useState(false);
-  const [showControlGuide, setShowControlGuide] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const changeChannel = (channel: Channel) => {
@@ -28,7 +27,6 @@ const Index = () => {
 
   const toggleChannels = () => {
     setShowChannels((prev) => !prev);
-    setShowControlGuide(false);
   };
 
   const toggleFullscreen = () => {
@@ -39,14 +37,24 @@ const Index = () => {
     }
   };
 
-  // Handle keyboard events
+  // Auto fullscreen on mount
+  useEffect(() => {
+    const enterFullscreen = async () => {
+      try {
+        if (containerRef.current && !document.fullscreenElement) {
+          await containerRef.current.requestFullscreen();
+        }
+      } catch (err) {
+        console.error("Error attempting to enable fullscreen:", err);
+      }
+    };
+    
+    enterFullscreen();
+  }, []);
+
+  // Add keyboard event listener
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (showControlGuide) {
-        setShowControlGuide(false);
-        return;
-      }
-
       switch (event.key) {
         case "ArrowUp":
           handlePreviousChannel();
@@ -60,8 +68,6 @@ const Index = () => {
         case "ArrowRight":
           if (showChannels) {
             setShowChannels(false);
-          } else {
-            setShowControlGuide(true);
           }
           break;
         default:
@@ -71,7 +77,7 @@ const Index = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [showChannels, showControlGuide]);
+  }, [currentChannel, showChannels]);
 
   return (
     <div ref={containerRef} className="relative w-full h-screen bg-black">
@@ -95,24 +101,6 @@ const Index = () => {
           }}
           onClose={toggleChannels}
         />
-      )}
-
-      {showControlGuide && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 animate-fade-in"
-          onClick={() => setShowControlGuide(false)}
-        >
-          <div className="bg-black/90 p-8 rounded-lg border border-white/20 text-white space-y-4">
-            <h2 className="text-xl font-semibold mb-4">Keyboard Controls</h2>
-            <div className="space-y-2">
-              <p>⬆️ Arrow Up: Previous Channel</p>
-              <p>⬇️ Arrow Down: Next Channel</p>
-              <p>⬅️ Arrow Left: Open Channel List</p>
-              <p>➡️ Arrow Right: Show/Hide Controls Guide</p>
-            </div>
-            <p className="text-sm text-gray-400 mt-4">Press any key to close</p>
-          </div>
-        </div>
       )}
     </div>
   );
