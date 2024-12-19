@@ -38,27 +38,27 @@ export const useShaka = (channel: Channel) => {
       player.configure({
         streaming: {
           // Reduce buffer sizes for faster initial loading
-          bufferingGoal: 5,
+          bufferingGoal: 10,
           rebufferingGoal: 2,
-          bufferBehind: 15,
+          bufferBehind: 30,
           // Optimize network retry settings
           retryParameters: {
-            maxAttempts: 3,
-            baseDelay: 100,
-            backoffFactor: 1.1,
-            timeout: 8000
+            maxAttempts: 5,
+            baseDelay: 1000,
+            backoffFactor: 2,
+            timeout: 30000,
+            fuzzFactor: 0.5
           },
           // Enable low latency streaming
           lowLatencyMode: true,
           // Optimize segment prefetch
-          segmentPrefetchLimit: 2,
-          smallGapLimit: 0.5
+          segmentPrefetchLimit: 3
         },
         // Optimize adaptive bitrate settings
         abr: {
           enabled: true,
           defaultBandwidthEstimate: 1000000, // 1Mbps initial estimate
-          switchInterval: 1,
+          switchInterval: 8,
           bandwidthUpgradeTarget: 0.85,
           bandwidthDowngradeTarget: 0.95,
           restrictions: {
@@ -68,10 +68,11 @@ export const useShaka = (channel: Channel) => {
         },
         manifest: {
           retryParameters: {
-            maxAttempts: 3,
-            baseDelay: 100,
-            backoffFactor: 1.1,
-            timeout: 8000
+            maxAttempts: 5,
+            baseDelay: 1000,
+            backoffFactor: 2,
+            timeout: 30000,
+            fuzzFactor: 0.5
           },
           dash: {
             // Enable DASH specific optimizations
@@ -84,6 +85,10 @@ export const useShaka = (channel: Channel) => {
       player.addEventListener("error", (event: any) => {
         console.error("Player error:", event.detail);
         setError(event.detail.message);
+        // Attempt to recover from error
+        if (videoRef.current) {
+          videoRef.current.load();
+        }
       });
 
       // Add buffering event listeners
@@ -99,9 +104,9 @@ export const useShaka = (channel: Channel) => {
               [keyId]: key
             },
             retryParameters: {
-              maxAttempts: 2,
-              baseDelay: 100,
-              backoffFactor: 1.1,
+              maxAttempts: 3,
+              baseDelay: 1000,
+              backoffFactor: 2,
               fuzzFactor: 0.5
             }
           }
