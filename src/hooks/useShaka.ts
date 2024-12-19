@@ -34,25 +34,27 @@ export const useShaka = (channel: Channel) => {
       await player.attach(videoRef.current);
       shakaPlayerRef.current = player;
 
-      // Configure auto quality adjustment
+      // Optimize buffering and playback
       player.configure({
+        streaming: {
+          bufferingGoal: 30,
+          rebufferingGoal: 15,
+          bufferBehind: 30,
+          retryParameters: {
+            maxAttempts: 3,
+            baseDelay: 500,
+            backoffFactor: 1.5,
+            timeout: 20000
+          },
+          smallGapLimit: 0.5,
+          jumpLargeGaps: true
+        },
         abr: {
           enabled: true,
           defaultBandwidthEstimate: 1000000,
-          switchInterval: 1,
+          switchInterval: 4,
           bandwidthUpgradeTarget: 0.85,
           bandwidthDowngradeTarget: 0.95
-        },
-        streaming: {
-          bufferingGoal: 10,
-          rebufferingGoal: 2,
-          retryParameters: {
-            maxAttempts: 5,
-            baseDelay: 1000,
-            backoffFactor: 2,
-            timeout: 30000,
-            fuzzFactor: 0.5
-          }
         }
       });
 
@@ -60,6 +62,11 @@ export const useShaka = (channel: Channel) => {
         console.error("Player error:", event.detail);
         setError(event.detail.message);
       });
+
+      // Add buffering event listeners
+      videoRef.current.addEventListener('waiting', () => setIsLoading(true));
+      videoRef.current.addEventListener('playing', () => setIsLoading(false));
+      videoRef.current.addEventListener('canplay', () => setIsLoading(false));
 
       if (channel.drmKey) {
         const [keyId, key] = channel.drmKey.split(':');
@@ -69,9 +76,9 @@ export const useShaka = (channel: Channel) => {
               [keyId]: key
             },
             retryParameters: {
-              maxAttempts: 5,
-              baseDelay: 1000,
-              backoffFactor: 2,
+              maxAttempts: 3,
+              baseDelay: 500,
+              backoffFactor: 1.5,
               fuzzFactor: 0.5
             }
           }
