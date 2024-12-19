@@ -459,7 +459,7 @@ export const channels: Channel[] = [
     id: "67",
     name: "NBA TV",
     logo: "https://upload.wikimedia.org/wikipedia/en/d/d2/NBA_TV.svg",
-    url: "http://fl2.moveonjoy.com/NBA_TV/index.m3u8",
+    url: "https://fl5.moveonjoy.com/NBA_TV/index.m3u8",
   },
   {
     id: "68",
