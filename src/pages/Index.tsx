@@ -37,6 +37,21 @@ const Index = () => {
     }
   };
 
+  // Auto fullscreen on mount
+  useEffect(() => {
+    const enterFullscreen = async () => {
+      try {
+        if (containerRef.current && !document.fullscreenElement) {
+          await containerRef.current.requestFullscreen();
+        }
+      } catch (err) {
+        console.error("Error attempting to enable fullscreen:", err);
+      }
+    };
+    
+    enterFullscreen();
+  }, []);
+
   // Add keyboard event listener
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -62,7 +77,7 @@ const Index = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentChannel, showChannels]); // Added showChannels as dependency since we use it in the handler
+  }, [currentChannel, showChannels]);
 
   return (
     <div ref={containerRef} className="relative w-full h-screen bg-black">
